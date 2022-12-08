@@ -11,8 +11,8 @@ app = Flask(__name__)
 api = Api(app)
 
 # set config
-app_settings = os.getenv('APP_settings')
-app.config.from_object(app_settings)
+app.config.from_object('src.config.DevelopmentConfig')
+
 
 class Ping(Resource):
   def get(self):
