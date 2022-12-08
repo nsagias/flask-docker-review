@@ -1,0 +1,2 @@
+CREATE DATABASE api_deb;
+CREATE DATABASE api_test;
