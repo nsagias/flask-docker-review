@@ -2,6 +2,7 @@
 
 https://bobbyhadz.com/blog/python-importerror-cannot-import-name-parse-rule-from-werkzeug-routing
 
+
 pip install werkzeug==2.1.2
 pip3 install werkzeug==2.1.2
 
@@ -17,8 +18,20 @@ py -m pip install werkzeug==2.1.2
 
 
 
-## Additional Docker instructions 
+# Additional Docker instructions 
 ## set working directory
 - in Dockerfile add the following
+```Dockerfile
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
+```
+
+## check config in docker logs
+- add to `__init__.py`
+```python
+import sys
+print(app.config, file=sys.stderr)
+```
+- docker-compose up -d --build
+- docker-compose logs
+- docker-compose down
