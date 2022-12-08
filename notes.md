@@ -14,3 +14,11 @@ py -m pip install werkzeug==2.1.2
 
 ## 👇️ for Jupyter Notebook
 !pip install werkzeug==2.1.2
+
+
+
+## Additional Docker instructions 
+## set working directory
+- in Dockerfile add the following
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
