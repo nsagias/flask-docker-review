@@ -35,6 +35,6 @@ print(app.config, file=sys.stderr)
 - docker-compose up -d --build
 - docker-compose logs
 - docker-compose down
-
+- docker-compose exec api python -m pytest "src/tests"
 ## entrypoint chmod
  chmod 755 or 777 instead of +x.
