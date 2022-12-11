@@ -1,7 +1,6 @@
 # src/tests/test_users.py
 
 import json
-from src import db
 from src.api.models import User
 
 def test_add_user(test_app, test_database):
@@ -43,10 +42,8 @@ def test_add_user_invalid_json_keys(test_app, test_database):
     assert 'Input payload validation failed' in data['message']
 
     
-def test_single_user(test_app, test_database):
-    user = User(username='anyperson', email='anypersonemail@anywhere.com')
-    db.session.add(user)
-    db.session.commit()
+def test_single_user(test_app, test_database, add_user):
+    user = add_user('anyperson','anypersonemail@anywhere.com')
     client = test_app.test_client()
     resp = client.get(f'/users/{user.id}')
     data = json.loads(resp.data.decode())
