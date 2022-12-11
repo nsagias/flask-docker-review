@@ -16,4 +16,4 @@ def test_database():
     db.create_all()
     yield db
     db.session.remove()
-    db.drop_app()
+    db.drop_all()
