@@ -39,8 +39,11 @@ class UsersList(Resource):
     
     @api.marshal_with(user, as_list=True)
     def get(self):
-        return User.query.all(), 200
-
+        try:
+            users = User.query.all()
+            return users
+        except:
+            return [], 200
 
 class Users(Resource):
     

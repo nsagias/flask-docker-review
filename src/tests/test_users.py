@@ -56,15 +56,16 @@ def test_single_user_incorrect_id(test_app, test_database):
     assert 'User 999 does not exist' in data['message']
 
 def test_all_users(test_app, test_database, add_user):
+    test_database.session.query(User).delete() 
     add_user('nick4', 'nick4@anyplace.com')
     add_user('nick5', 'nick5@anyplace.com')
     client = test_app.test_client()
     resp = client.get('/users')
     data = json.loads(resp.data.decode())
     assert resp.status_code == 200
-    assert len(data) == 4
+    assert len(data) == 2
     print(f'DATA LENGTH {len(data)}')
-    assert 'nick4' in data[2]['username']
-    assert 'nick4@anyplace.com' in data[2]['email']
-    assert 'nick5' in data[3]['username']
-    assert 'nick5@anyplace.com' in data[3]['email']
+    assert 'nick4' in data[0]['username']
+    assert 'nick4@anyplace.com' in data[0]['email']
+    assert 'nick5' in data[1]['username']
+    assert 'nick5@anyplace.com' in data[1]['email']
