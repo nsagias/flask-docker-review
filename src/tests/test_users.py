@@ -41,6 +41,7 @@ def test_add_user_invalid_json_keys(test_app, test_database):
     data = json.loads(resp.data.decode())
     assert resp.status_code == 400
     assert 'Input payload validation failed' in data['message']
+
     
 def test_single_user(test_app, test_database):
     user = User(username='anyperson', email='anypersonemail@anywhere.com')
@@ -53,5 +54,11 @@ def test_single_user(test_app, test_database):
     assert 'anyperson' in data['username']
     assert 'anypersonemail@anywhere.com' in data['email']
 
+def test_single_user_incorrect_id(test_app, test_database):
+    client = test_app.test_client()
+    resp = client.get('/users/999')
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 404
+    assert 'User 999 does not exist' in data['message']
     
-    
+
