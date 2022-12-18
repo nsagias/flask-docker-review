@@ -1,6 +1,7 @@
 # Pull official base image
 FROM python:3.10.3-slim-buster
 
+
 # Create working directory
 RUN mkdir -p /usr/src/app
 
@@ -13,7 +14,7 @@ ENV PYTHONUNBUFFERED 1
 
 # install system dependencies
 RUN apt-get update \
-  && apt-get -y install netcat gcc postgresql \
+  && apt-get -y install netcat gcc postgresql build-essential libpq-dev \
   && apt-get clean
 
 # Add and install requirements
