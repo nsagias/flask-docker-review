@@ -44,8 +44,8 @@ class UsersList(Resource):
         try:
             users = User.query.all()
             return users
-        except:
-            return [], 200
+        except AttributeError:
+            return [], 404
 
 
 class Users(Resource):
