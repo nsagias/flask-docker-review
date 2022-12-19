@@ -27,9 +27,9 @@ RUN pip install -r requirements.txt
 # Add app
 COPY . .
 
-# add and run a non-root user
+# add and run as non-root user
 RUN adduser --disabled-password myuser
 USER myuser
 
-# add gunicorn
+# run gunicorn
 CMD gunicorn --bind 0.0.0.0:$PORT manage:app
