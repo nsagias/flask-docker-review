@@ -1,6 +1,7 @@
 # src/tests/test_users.py
 
 import json
+
 from src.api.models import User
 
 
