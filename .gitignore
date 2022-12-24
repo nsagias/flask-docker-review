@@ -2,8 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
+notes.md
+
 env
 __pycache__
+
 
 htmlcov/index.html
 .coveragerc
