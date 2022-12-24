@@ -13,6 +13,7 @@ build:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
+    CI_DEBUG_TRACE: "true"
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE:latest || true
@@ -29,6 +30,7 @@ test:
   services:
     - postgres:latest
   variables:
+    CI_DEBUG_TRACE: "true"
     POSTGRES_DB: users
     POSTGRES_USER: runner
     POSTGRES_PASSWORD: runner
