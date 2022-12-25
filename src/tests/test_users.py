@@ -133,7 +133,7 @@ def test_update_user_invalid_json(test_app, test_database):
     )
     data = json.loads(resp.data.decode())
     assert resp.status_code == 400
-    assert "Input payload validation faild" in data["message"]
+    assert "Input payload validation failed" in data["message"]
     
 def test_update_user_invalid_json_keys(test_app, test_database):
     client = test_app.test_client()
@@ -144,6 +144,6 @@ def test_update_user_invalid_json_keys(test_app, test_database):
     )
     data = json.loads(resp.data.decode())
     assert resp.status_code == 400
-    assert "Input payload validation failded" in data["message"]
+    assert "Input payload validation failed" in data["message"]
     
     
