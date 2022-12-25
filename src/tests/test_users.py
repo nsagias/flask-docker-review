@@ -1,6 +1,7 @@
 # src/tests/test_users.py
 
 import json
+
 import pytest
 
 from src.api.models import User
@@ -125,12 +126,22 @@ def test_update_user(test_app, test_database, add_user):
 
 
 # parametrized tests
-@pytest.mark.parametrize("user_id, payload, status_code, message", [
-    [1, {}, 400, "Input payload validation failed"],
-    [1, {"email": "me@example.com"}, 400, "Input payload validation failed"],
-    [999, {"username": "me", "email": "me@example"}, 404, "User 999 does not exist"]
-])
-def test_update_user_invalid(test_app, test_database, user_id, payload, status_code, message):
+@pytest.mark.parametrize(
+    "user_id, payload, status_code, message",
+    [
+        [1, {}, 400, "Input payload validation failed"],
+        [1, {"email": "me@example.com"}, 400, "Input payload validation failed"],
+        [
+            999,
+            {"username": "me", "email": "me@example"},
+            404,
+            "User 999 does not exist",
+        ],
+    ],
+)
+def test_update_user_invalid(
+    test_app, test_database, user_id, payload, status_code, message
+):
     client = test_app.test_client()
     resp = client.put(
         f"/users/{user_id}",
