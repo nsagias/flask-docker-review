@@ -146,4 +146,15 @@ def test_update_user_invalid_json_keys(test_app, test_database):
     assert resp.status_code == 400
     assert "Input payload validation failed" in data["message"]
     
+
+def test_update_user_does_not_exist(test_app, test_database):
+    client = test_app.test_client()
+    resp = client.put(
+        "/users/999",
+        data=json.dumps({"username": "me", "email": "me@example"}),
+        content_type="application/json",
+    )
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 404
+    assert "User 999 does not exist" in data["message"]
     
