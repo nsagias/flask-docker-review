@@ -74,6 +74,8 @@ def test_all_users(test_app, test_database, add_user):
     assert "nick5" in data[1]["username"]
     assert "nick5@anyplace.com" in data[1]["email"]
 
+
+# Delete route
 def test_remove_user(test_app, test_database, add_user):
     test_database.session.query(User).delete()
     user = add_user("user-to-be-removed", "remove-me@example.com")
@@ -100,4 +102,48 @@ def test_remove_user_incorrect_id(test_app, test_database):
     data = json.loads(resp.data.decode())
     assert resp.status_code == 404
     assert "User 999 does not exist" in data["message"]
+
+
+# PUT route
+def test_update_user(test_app, test_database, add_user):
+    user = add_user("user-to-be-updated", "update-me@example.com")
+    client = test_app.test_client()
+    resp_one = client.put(
+        f"/users/{user.id}",
+        data=json.dumps({"username": "me", "email": "me@example.com"}),
+        content_type="application/json",
+    )
+    data = json.loads(resp_one.data.decode())
+    assert resp_one.status_code == 200
+    assert f"{user.id} was updated" in data["message"]
+    
+    resp_two = client.get(f"/users/{user.id}")
+    data = json.loads(resp_two.data.decode())
+    assert resp_two.status_code == 200
+    assert "me" in data["username"]
+    assert "me@example.com" in data["email"]
+    
+
+def test_update_user_invalid_json(test_app, test_database):
+    client = test_app.test_client()
+    resp = client.put(
+        "/users/1",
+        data=json.dumps({}),
+        content_type="application/json",
+    )
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 400
+    assert "Input payload validation faild" in data["message"]
+    
+def test_update_user_invalid_json_keys(test_app, test_database):
+    client = test_app.test_client()
+    resp = client.put(
+        "/users/1",
+        data=json.dumps({"email": "me@example.com"}),
+        content_type="application/json",
+    )
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 400
+    assert "Input payload validation failded" in data["message"]
+    
     
