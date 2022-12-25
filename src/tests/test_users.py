@@ -117,13 +117,12 @@ def test_update_user(test_app, test_database, add_user):
     data = json.loads(resp_one.data.decode())
     assert resp_one.status_code == 200
     assert f"{user.id} was updated" in data["message"]
-    
     resp_two = client.get(f"/users/{user.id}")
     data = json.loads(resp_two.data.decode())
     assert resp_two.status_code == 200
     assert "me" in data["username"]
     assert "me@example.com" in data["email"]
-    
+
 
 # parametrized tests
 @pytest.mark.parametrize("user_id, payload, status_code, message", [
@@ -141,16 +140,16 @@ def test_update_user_invalid(test_app, test_database, user_id, payload, status_c
     data = json.loads(resp.data.decode())
     assert resp.status_code == status_code
     assert message in data["message"]
-   
- 
+
+
 def test_update_user_duplicate_email(test_app, test_database, add_user):
     add_user("any", "any@example.com")
     user = add_user("other", "other@example.com")
-    
+
     client = test_app.test_client()
     resp = client.put(
         f"/users/{user.id}",
-        data=json.dumps({"username": "other", "email":"other@example.com"}),
+        data=json.dumps({"username": "other", "email": "other@example.com"}),
         content_type="application/json",
     )
     data = json.loads(resp.data.decode())
