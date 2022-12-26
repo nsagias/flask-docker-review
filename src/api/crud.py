@@ -4,22 +4,31 @@ from src import db
 from src.api.models import User
 
 def get_all_users():
-    pass
+    return User.query.all()
 
 
-def get_users_by_id(user_id):
-    pass
+def get_user_by_id(user_id):
+    return User.query.filter_by(id=user_id).first()
 
 
 def get_user_by_email(email):
-    pass
+    return User.query.filter_by(email=email).first()
 
 
 def add_user(username, email):
-    pass
+    user = User(username=username, email=email)
+    db.session.add(user)
+    db.session.commit()
+    return user
 
 def update_user(user, username, email):
-    pass
+    user.username = username
+    user.email = email
+    db.session.commit()
+    return user
+
 
 def delete_user(user):
-    pass
+    db.session.delete(user)
+    db.session.commit()
+    return user
