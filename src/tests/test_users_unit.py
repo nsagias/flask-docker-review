@@ -66,18 +66,63 @@ def test_add_user_duplicate_email(test_app, monkeypatch):
 	assert "Sorry, That email already exists." in data["message"]
 
 
+# Get User
 def test_single_user(test_app, monkeypatch):
-    pass
+    def mock_get_user_by_id(user_id):
+        return {
+			"id": 1,
+			"username": "nick",
+			"email": "nick@example.com",
+			"created_date": datetime.now()
+		}
+    monkeypatch.setattr(src.api.users, "get_user_by_id", mock_get_user_by_id)
+    client = test_app.test_client()
+    resp = client.get("/users/1")
+    data = json.loads(resp.data.decode())
+    assert "nick" in data["username"]
+    assert "nick@example.com" in data["email"]
 
 
 def test_single_user_incorrect_id(test_app, monkeypatch):
-    pass
+    def mock_get_user_by_id(user_id):
+        return None
+    monkeypatch.setattr(src.api.users, "get_user_by_id", mock_get_user_by_id)
+    client = test_app.test_client()
+    resp = client.get("/users/999")
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 400
+    assert "User 999 does not exist" in data["message"]
 
 
 def test_all_users(test_app, monkeypatch):
-    pass
+    def mock_get_all_users():
+        return [
+            {
+                "id": 1,
+                "username": "nick",
+                "email": "nick@anyplace.io",
+                "created_date": datetime.now()
+            },
+            {
+                "id": 2,
+                "username": "nick2",
+                "email": "nick2@example.com",
+                "created_date": datetime.now()
+            }
+        ]
+    monkeypatch.setattr(src.api.users, "get_all_users", mock_get_all_users)
+    client = test_app.test_client()
+    resp = client.get("/users")
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 200
+    assert len(data) == 2
+    assert "nick" in data[0]["username"]
+    assert "nick@anyplace.io" in data[0]["email"]
+    assert "nick2" in data[1]["username"]
+    assert "nick2@example.com" in data[1]["email"]
 
 
+# Remove User
 def test_remove_user(test_app, monkeypatch):
     pass
 
@@ -86,6 +131,7 @@ def test_remove_user_incorrect_id(test_app, monkeypatch):
     pass
 
 
+# Update User
 def test_update_user(test_app, monkeypatch):
     pass
 
