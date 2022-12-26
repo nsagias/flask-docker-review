@@ -124,11 +124,37 @@ def test_all_users(test_app, monkeypatch):
 
 # Remove User
 def test_remove_user(test_app, monkeypatch):
-    pass
-
+	class AttrDict(dict):
+		def __init__(self, *args, **kwargs):
+			super(AttrDict, self).__init__(*args, **kwargs)
+			self.__dict__ = self
+	def mock_get_user_by_id(user_id):
+		d = AttrDict()
+		d.update({
+			"id": 1,
+			"username": "user-to-be-removed",
+			"email": "remove-me@example.com"
+		})
+		return d
+	def mock_delete_user(user):
+		return True
+	monkeypatch.setattr(src.api.users, "get_user_by_id", mock_get_user_by_id)
+	monkeypatch.setattr(src.api.users, "delete_user", mock_delete_user)
+	client = test_app.test_client()
+	resp_two = client.delete("/users/1")
+	data = json.loads(resp_two.data.decode())
+	assert resp_two.status_code == 200
+	assert "remove-me@example.com was removed!" in data["message"] 
 
 def test_remove_user_incorrect_id(test_app, monkeypatch):
-    pass
+	def mock_get_user_by_id(user_id):
+		return None
+	monkeypatch.setattr(src.api.users, "get_user_by_id", mock_get_user_by_id)
+	client = test_app.test_client()
+	resp = client.delete("/users/999")
+	data = json.loads(resp.data.decode())
+	assert resp.status_code == 404
+	assert "User 999 does not exist" in data["message"]
 
 
 # Update User
