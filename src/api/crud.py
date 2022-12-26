@@ -4,8 +4,11 @@ from src import db
 from src.api.models import User
 
 def get_all_users():
-    return User.query.all()
-
+    try:
+        users = User.query.all()
+        return users
+    except AttributeError:
+        return []
 
 def get_user_by_id(user_id):
     return User.query.filter_by(id=user_id).first()
