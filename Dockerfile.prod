@@ -1,9 +1,41 @@
+
+## BUILDER
+
+# Pull official base image
+FROM python:3.10.3-slim-buster as builder
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+
+# install system dependencies
+RUN apt-get update \
+  && apt-get -y install netcat gcc postgresql build-essential libpq-dev libpq5  \
+  && apt-get clean
+
+# Add and install requirements
+RUN pip install --upgrade pip
+COPY  ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+# Lint
+COPY . .
+
+RUN pip install black==22.3.0 flake8==4.0.1 isort==5.10.1
+RUN flake8 src
+RUN black src --check
+RUN isort src --check-only
+
+
+## FINAL
+
 # Pull official base image
 FROM python:3.10.3-slim-buster
 
-
-# Create working directory
-RUN mkdir -p /usr/src/app
 
 # Set working directory
 WORKDIR /usr/src/app
@@ -19,10 +51,12 @@ RUN apt-get update \
   && apt-get -y install netcat gcc postgresql build-essential libpq-dev libpq5  \
   && apt-get clean
 
-# Add and install requirements
+
+# install dependencies
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --upgrade pip
-COPY  ./requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache /wheels/*
 
 # Add app
 COPY . .
